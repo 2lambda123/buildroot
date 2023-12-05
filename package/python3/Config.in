@@ -41,6 +41,11 @@ menu "core python3 modules"
 
 comment "The following modules are unusual or require extra libraries"
 
+config BR2_PACKAGE_PYTHON3_2TO3
+	bool "2to3 module"
+	help
+	  code translation from python 2 to 3
+
 config BR2_PACKAGE_PYTHON3_BZIP2
 	bool "bz2 module"
 	select BR2_PACKAGE_BZIP2
@@ -114,5 +119,12 @@ config BR2_PACKAGE_PYTHON3_ZLIB
 	  zlib support in Python3
 
 endmenu
+
+config BR2_PACKAGE_PYTHON3_LIBSUBDIR_REMOVE
+	string "subdirs to remove from installation (coma-separated)"
+	default "turtledemo,unittest" 
+	help
+	  Comma-separated list of things like "turtledemo", "unittest",
+	  ensurepip, distutils, etc. see /usr/lib/python*/{here}
 
 endif

@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-LIBVA_VERSION = 2.4.0
+LIBVA_VERSION = 2.10.0
 LIBVA_SOURCE = libva-$(LIBVA_VERSION).tar.bz2
 LIBVA_SITE = https://github.com/intel/libva/releases/download/$(LIBVA_VERSION)
 LIBVA_LICENSE = MIT
@@ -16,15 +16,16 @@ LIBVA_DEPENDENCIES = host-pkgconf libdrm
 # libdrm is a hard-dependency
 LIBVA_CONF_OPTS = \
 	--enable-drm \
+	--with-drivers-path="/usr/lib/va" \
 	--disable-dummy-driver \
 	--prefix=/usr \
-	--prefix=/usr/lib64
+	--with-drivers-path="/usr/lib/dri"
 
 ifeq ($(BR2_PACKAGE_XORG7),y)
 LIBVA_DEPENDENCIES += xlib_libX11 xlib_libXext xlib_libXfixes
 LIBVA_CONF_OPTS += --enable-x11
-ifeq ($(BR2_PACKAGE_MESA3D_DRI_DRIVER),y)
-LIBVA_DEPENDENCIES += mesa3d
+ifeq ($(BR2_PACKAGE_HAS_LIBGL),y)
+LIBVA_DEPENDENCIES += libgl
 LIBVA_CONF_OPTS += --enable-glx
 endif
 else
@@ -38,11 +39,5 @@ LIBVA_CONF_OPTS += --enable-wayland
 else
 LIBVA_CONF_OPTS += --disable-wayland
 endif
-
-define LIBVA_INSTALL_TARGET_FIXUP
-	rm -rf $(TARGET_DIR)/usr/lib/include/va
-endef
-
-LIBVA_POST_INSTALL_TARGET_HOOKS += LIBVA_INSTALL_TARGET_FIXUP
 
 $(eval $(autotools-package))

@@ -4,12 +4,17 @@
 #
 ################################################################################
 
-LIBJPEG_VERSION = 9c
-LIBJPEG_SITE = http://www.ijg.org/files
+LIBJPEG_VERSION = 9d
+# 9d was released 2020-01-12, but the tarball was replaced upstream circa
+# 2021-03, causing hash mismatch. Until there is a new version released,
+# use our cached copy from s.b.o.
+#LIBJPEG_SITE = http://www.ijg.org/files
+LIBJPEG_SITE = http://sources.buildroot.org/libjpeg
 LIBJPEG_SOURCE = jpegsrc.v$(LIBJPEG_VERSION).tar.gz
 LIBJPEG_LICENSE = IJG
 LIBJPEG_LICENSE_FILES = README
 LIBJPEG_INSTALL_STAGING = YES
+LIBJPEG_CPE_ID_VENDOR = ijg
 LIBJPEG_PROVIDES = jpeg
 
 define LIBJPEG_REMOVE_USELESS_TOOLS
@@ -27,5 +32,8 @@ endef
 
 LIBJPEG_POST_INSTALL_STAGING_HOOKS += LIBJPEG_INSTALL_STAGING_PC
 
+# make libjpeg unavailable for target builds only if selected in config
+ifeq ($(BR2_PACKAGE_LIBJPEG),y)
 $(eval $(autotools-package))
+endif
 $(eval $(host-autotools-package))
